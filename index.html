@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webcam Stream</title>
+</head>
+<body>
+  <h1>Remote Webcam Viewer</h1>
+  <video id="webcam" autoplay playsinline></video>
+
+  <script>
+    const video = document.getElementById("webcam");
+    const serverUrl = "http://192.168.1.10:8080"; // Replace with your server's IP or hostname
+    const socket = new WebSocket(serverUrl);
+
+    socket.onopen = async () => {
+      console.log("Connected to the server");
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            socket.send(event.data); // Send video chunks to the server
+          }
+        };
+
+        mediaRecorder.start(100); // Send data every 100ms
+      } catch (err) {
+        console.error("Error accessing webcam:", err);
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+    };
+  </script>
+</body>
+</html>
