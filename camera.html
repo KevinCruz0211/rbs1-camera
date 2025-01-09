@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webcam Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      margin: 20px 0;
+    }
+    video {
+      width: 80%;
+      max-width: 600px;
+      border: 2px solid #333;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Webcam Viewer</h1>
+  <video id="webcam" autoplay playsinline></video>
+  <p>Make sure you allow access to the webcam when prompted by your browser.</p>
+
+  <script>
+    (async () => {
+      const videoElement = document.getElementById('webcam');
+      try {
+        // Access the webcam
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoElement.srcObject = stream;
+      } catch (error) {
+        console.error('Error accessing the webcam:', error);
+        alert('Could not access the webcam. Please check your permissions and try again.');
+      }
+    })();
+  </script>
+</body>
+</html>
